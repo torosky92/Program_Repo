@@ -33,10 +33,10 @@ class SQLMT(Base):
       New_Weight = []
       New_Measurament = []
       for References in ref:
-         New_CodeB.append(References.Worker)
-         New_NumCoils.append(References.Provider)
-         New_Weight.append(References.Reference)
-         New_Measurament.append(References.Presentation)
+         New_CodeB.append(References.CodeB)
+         New_NumCoils.append(References.Num_Coils)
+         New_Weight.append(References.Weight)
+         New_Measurament.append(References.Measurament)
       return (New_CodeB, New_NumCoils, New_Weight, New_Measurament)
 
    def AddMT(CODE: str, NUM_COILS: int, WEIGHT: float, MEASURAMENT: str):

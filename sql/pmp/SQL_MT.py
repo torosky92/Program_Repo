@@ -7,7 +7,8 @@ Base = declarative_base()
 
 class SQLMT(Base):
    __tablename__ = 'TABLA'
-   CodeB = Column("CODIGO_DE_BARRAS", String, primary_key=True)
+   Ref = Column("REF", Integer, primary_key=True)
+   CodeB = Column("CODIGO_DE_BARRAS", String)
    Num_Coils = Column("NUMERO_DE_BOBINAS", Integer)
    Weight = Column("PESO_NETO", Float)
    Measurament = Column("UNIDAD_DE_MEDIDA", String)

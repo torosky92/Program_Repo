@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets
-from bin.Ayuda import Ui_Form
+from bin.com.Ayuda import Ui_Form
 
 class HelpWindow(QtWidgets.QMainWindow, Ui_Form):
     def __init__(self, parent=None):

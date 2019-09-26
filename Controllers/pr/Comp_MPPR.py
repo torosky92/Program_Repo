@@ -1,10 +1,11 @@
 from sql.pr.SQL_MPPR import *
+from Settings import Settings
 
 #______________ CONTROL SQL Materia Prima con distintas Presentaciones Retorcido _________________#
 class findMPPR:
     def Check_And_Add_ListMPPR(NameTable: str):
-        CodeBr, NumPre, NumRem, NumCoils, NumCoilsR, TotalW, TotalWR, Measure = SQLFunction.FindALLMPPR(NameTable, 'sqlite:///lib/CBDR.db')
-        CodeBr2, NumPre2, NumRem2, NumCoils2, NumCoilsR2, TotalW2, TotalWR2, Measure2 = SQLFunction.FindALLMPPR(NameTable, 'sqlite:///lib/BDR.db')
+        CodeBr, NumPre, NumRem, NumCoils, NumCoilsR, TotalW, TotalWR, Measure = SQLFunction.FindALLMPPR(NameTable, Settings.Dir_BDR())
+        CodeBr2, NumPre2, NumRem2, NumCoils2, NumCoilsR2, TotalW2, TotalWR2, Measure2 = SQLFunction.FindALLMPPR(NameTable, Settings.Dir_CBDR())
         New_CodeB = []
         New_NumPre = []
         New_NumRem = []
@@ -33,26 +34,46 @@ class findMPPR:
                     New_TotalW.append(TotalW2[x])
                     New_TotalWR.append(TotalWR2[x])
                     New_Measure.append(Measure2[x])
-        SQLFunction.DeleteALLMPPR(NameTable, 'sqlite:///lib/CBDR.db')
-        SQLFunction.DeleteALLMPPR(NameTable, 'sqlite:///lib/BDR.db')
+        SQLFunction.DeleteALLMPPR(NameTable, Settings.Dir_CBDR())
+        SQLFunction.DeleteALLMPPR(NameTable, Settings.Dir_BDR())
         for x in range(len(New_CodeB)):
-            SQLFunction.AddMPPR(NameTable, 'sqlite:///lib/CBDR.db', New_CodeB[x], New_NumRem[x], New_NumPre[x], New_NumCoils[x],
+            SQLFunction.AddMPPR(NameTable, Settings.Dir_CBDR(), New_CodeB[x], New_NumRem[x], New_NumPre[x], New_NumCoils[x],
                               New_NumCoilsR[x], New_TotalW[x], New_TotalWR[x], New_Measure[x])
-            SQLFunction.AddMPPR(NameTable, 'sqlite:///lib/BDR.db', New_CodeB[x], New_NumRem[x], New_NumPre[x], New_NumCoils[x],
+            SQLFunction.AddMPPR(NameTable, Settings.Dir_BDR(), New_CodeB[x], New_NumRem[x], New_NumPre[x], New_NumCoils[x],
                               New_NumCoilsR[x], New_TotalW[x], New_TotalWR[x], New_Measure[x])
 
-    def FindObjMPPR(NameTable: str, Table:str, REF: str):
-        if Table == "Normal":
-            Type = 'sqlite:///lib/BDR.db'
+    def FindObjMPPR(Provider: str, Presentation: str, Table:str, REF: str):
+        if Provider == Settings.Var_Provider1():
+            if Presentation == Settings.Var_P1():
+                NameTable = Settings.Var_EC()
+            else:
+                NameTable = Settings.Var_EE()
         else:
-            Type ='sqlite:///lib/PBDR.db'
+            if Presentation == Settings.Var_P1():
+                NameTable = Settings.Var_IC()
+            else:
+                NameTable = Settings.Var_IE()
+        if Table == Settings.Var_Process1():
+            Type = Settings.Dir_BDR()
+        else:
+            Type = Settings.Dir_PBDR()
         CodeB, Num_Pre, Num_Rem, Num_Coils, Num_CoilsR, Total_Weight, Total_WeightR, Measurement = SQLFunction.FindsMPPR(NameTable, Type, REF)
         return (CodeB)
 
-    def FindESMPPR(NameTable: str, Table:str, REF: str):
-        if Table == "Normal":
-            Type = 'sqlite:///lib/BDR.db'
+    def FindESMPPR(Provider: str, Presentation: str, Table:str, REF: str):
+        if Provider == Settings.Var_Provider1():
+            if Presentation == Settings.Var_P1():
+                NameTable = Settings.Var_EC()
+            else:
+                NameTable = Settings.Var_EE()
         else:
-            Type ='sqlite:///lib/PBDR.db'
+            if Presentation == Settings.Var_P1():
+                NameTable = Settings.Var_IC()
+            else:
+                NameTable = Settings.Var_IE()
+        if Table == Settings.Var_Process1():
+            Type = Settings.Dir_BDR()
+        else:
+            Type = Settings.Dir_PBDR()
         CodeB, Num_Pre, Num_Rem, Num_Coils, Num_CoilsR, Total_Weight, Total_WeightR, Measurement = SQLFunction.FindMPPR(NameTable, Type, REF)
         return (Num_Coils, Num_CoilsR, Total_Weight, Total_WeightR)

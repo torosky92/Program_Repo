@@ -1,5 +1,5 @@
-from bin.QUIEN import Ui_Form3
-from PyQt5 import  QtWidgets, QtCore, QtGui, QtWidgets
+from bin.com.QUIEN import Ui_Form3
+from PyQt5 import QtWidgets
 
 class MadeBy(QtWidgets.QMainWindow, Ui_Form3):
     def __init__(self, parent=None):

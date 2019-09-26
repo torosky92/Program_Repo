@@ -11,10 +11,10 @@ class Template(object):
     Num_Pre = Column("NUMERO_DE_PRESENTACION", Integer)
 
 class EEE(Template, Base):
-    __tablename__ = "EJEMPLO1"
+    __tablename__ = "TORRE"
 
 class EDE(Template, Base):
-    __tablename__ = "EJEMPLO2"
+    __tablename__ = "PUTO"
 
 class Forms:
     def AddEX(NameTable: str, TABLA:str, CODEB: str, NUM_PRE: int):

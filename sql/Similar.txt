@@ -1,0 +1,71 @@
+Carpetas
+- Settings Programa que contiene las direcciones de las SQL y variables del sistema
+- SettingsUser Programa de variable de usuario
+- lib
+	- CBD.db Base de datos de materia prima
+	Informacion de cada materia prima retirada una tabla para cada presentacion y proveedor ( 4 listas) datos de materia prima retirado,
+	montaje retorcido, parado de proceso, parado en montaje, peso, material final de retorcido
+	- CBDR.db Comparacion de Base de datos de materia en proceso de retorcido
+	- BDR.db Base de datos de materia en proceso de retorcido
+	- PBDR.db Base de datos de materia en proceso de retorcido para pruebas
+	- RMAQ.db Referencias de codigos, maquinas y paros de operacion
+	- OP.db Base de datos de operarios
+	- PW.db Autorizacion, Token y password
+	- Inf.db Base de datos de las imagenes de ayuda para la interfaz de usuario
+- Data
+	- com (Comun en todos los programas)
+
+	- prp (Proceso de Recepcion de pedidos)
+
+	- pmp (Proceso Materia Prima)
+
+	- pr (Proceso Retorcido)
+		- Upgrade_Data Actualizar base de datos del proceso de materia prima
+- bin
+	
+- Controllers
+	- port (Dispositivos externos)
+		- RFID Lector de tarjetas
+	- com (Conexion)
+		- check Verifica si hay conexion de red
+		- Down_Dropbox Programa para descargar y subir documentos
+	- prp (Proceso de Recepcion de pedidos)
+	- pmp (Proceso Materia Prima)
+		- Comp_MPP Control de base de datos de materia prima para presentaciones
+		- Comp_MP Control de base de datos de materia prima
+	- pr (Proceso Retorcido)
+		- Comp_MPPR Control de base de datos de materia prima para presentaciones retirado
+		- Comp_MPR Control de base de datos de materia prima retirado
+		- Comp_MR Control de montaje de retorcido
+		- Comp_MFR Contro de materia final de retorcido
+		- Comp_P Control de peso
+		- Comp_PM Control de Parado de Montaje y Proceso
+		- Comp_T Control de Tabla de Lote
+- sql
+	- prp (Proceso de Recepcion de pedidos)
+
+	- pmp (Proceso Materia Prima)
+		- SQL_MPP base de datos de Materia Prima con distintas Presentaciones
+		- SQL_MP base de Materia Prima
+		- SQL_MEM Base de datos de la memoria de la materia prima
+		- SQL_PI Base de datos de proceso de ingreso de la materia prima
+		- SQL_MT Base de datos de materia prima
+	- pr (Proceso Retorcido)
+		- SQL_MPPR base de datos de Materia Prima con distintas Presentaciones Retirados
+		- SQL_MPR base de datos de Materia Prima Retirada
+		- SQL_MR base de datos de Montaje de Retorcido y Proceso
+		- SQL_CC base de datos de codigo de color del db RMAQ
+		- SQL_MAQ Base de datos del funcionamiento de las maquinas
+		- SQL_MFR Base de datos de Material Final de Retorcido
+		- SQL_P Base de datos de Peso
+		- SQL_ST Base de datos para los tipos de parado
+		- SQL_PM Base de datos de paro de proceso (Montaje y Proceso)
+		- SQL_T Base de datos de la tabla de Lote
+	- com (Base de datos comunes)
+		- SQL_COM Base de datos de los puertos de comunicacion serial
+		- SQL_PASS Base de datos para los permisos
+		- SQL_PW Base de datos de Password del sistema
+		- SQL_REFE Base de datos de Referencia de materia prima
+		- SQL_TOKEN Base de datos del token de Dropbox
+		- SQL_User Base de datos de los Operarios
+		- SQL_INF Base de datos de ayuda

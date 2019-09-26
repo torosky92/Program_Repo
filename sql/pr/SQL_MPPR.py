@@ -1,7 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Float, create_engine, Table, MetaData, inspect, Numeric
+from sqlalchemy import Column, Integer, String, Float, create_engine
 from sqlalchemy.orm import sessionmaker
-
+from Settings import Settings
 Base = declarative_base()
 
 class Template(object):
@@ -32,14 +32,7 @@ class SQLFunction:
       engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
-      if NameTable == "ENKA CAJA":
-         ref = session.query(MPECR()).all()
-      elif NameTable == "ENKA ESTIBAS":
-         ref = session.query(MPECR()).all()
-      elif NameTable == "IMPORTADO CAJA":
-         ref = session.query(MPICR()).all()
-      else:
-         ref = session.query(MPIER()).all()
+      ref = session.query(SQLFunction.WhichTable(NameTable)).all()
       session.close()
       for References in ref:
          if References.CodeB == REFERENCE:
@@ -50,14 +43,7 @@ class SQLFunction:
       engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
-      if NameTable == "ENKA CAJA":
-         ref = session.query(MPECR()).all()
-      elif NameTable == "ENKA ESTIBAS":
-         ref = session.query(MPECR()).all()
-      elif NameTable == "IMPORTADO CAJA":
-         ref = session.query(MPICR()).all()
-      else:
-         ref = session.query(MPIER()).all()
+      ref = session.query(SQLFunction.WhichTable(NameTable)).all()
       CodeBr = []
       NumPre = []
       NumRem = []
@@ -83,15 +69,7 @@ class SQLFunction:
       engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
-      if NameTable == "ENKA CAJA":
-         ref = session.query(MPECR).all()
-      elif NameTable == "ENKA ESTIBAS":
-         ref = session.query(MPEER).all()
-      elif NameTable == "IMPORTADO CAJA":
-         ref = session.query(MPICR).all()
-      else:
-         ref = session.query(MPIER).all()
-      print(ref)
+      ref = session.query(SQLFunction.WhichTable(NameTable)).all()
       CodeBr = []
       NumPre = []
       NumRem = []
@@ -117,13 +95,13 @@ class SQLFunction:
       engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
-      if NameTable == "ENKA CAJA":
+      if NameTable == Settings.Var_EC():
          MP = MPECR()
-      elif NameTable == "ENKA ESTIBAS":
-         MP = MPECR()
-      elif NameTable == "IMPORTADO CAJA":
+      elif NameTable == Settings.Var_EE():
+         MP = MPEER()
+      elif NameTable == Settings.Var_IC():
          MP = MPICR()
-      else:
+      elif NameTable == Settings.Var_IE():
          MP = MPIER()
       MP.CodeB = CODEB
       MP.Num_Rem = NUM_REM
@@ -141,14 +119,7 @@ class SQLFunction:
       engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
-      if NameTable == "ENKA CAJA":
-         session.query(MPECR()).filter_by(CodeB=CODEB).delete()
-      elif NameTable == "ENKA ESTIBAS":
-         session.query(MPECR()).filter_by(CodeB=CODEB).delete()
-      elif NameTable == "IMPORTADO CAJA":
-         session.query(MPICR()).filter_by(CodeB=CODEB).delete()
-      else:
-         session.query(MPIER()).filter_by(CodeB=CODEB).delete()
+      session.query(SQLFunction.WhichTable(NameTable)).filter_by(CodeB=CODEB).delete()
       session.commit()
       session.close()
 
@@ -156,14 +127,7 @@ class SQLFunction:
       engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
-      if NameTable == "ENKA CAJA":
-         session.query(MPECR()).delete()
-      elif NameTable == "ENKA ESTIBAS":
-         session.query(MPEER()).delete()
-      elif NameTable == "IMPORTADO CAJA":
-         session.query(MPICR()).delete()
-      else:
-         session.query(MPIER()).delete()
+      session.query(SQLFunction.WhichTable(NameTable)).delete()
       session.commit()
       session.close()
 
@@ -171,81 +135,26 @@ class SQLFunction:
       engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
-      if NameTable == "ENKA CAJA":
-         valueCodeB, ValueNumPre, ValueNumRem, ValueCoils, ValuerCoilsR, ValueTotalW, ValueTotalWR, ValueMe = SQLFunction.FindMPPR(
-            NameTable, TABLA, REMISION)
-         if DATO_MOD == "CODIGO DE BARRAS":
-            session.query(MPECR()).filter_by(CodeB=valueCodeB).update({SQLFunction.CodeB: Value})
-         elif DATO_MOD == "NUMERO DE REMISION":
-            session.query(MPECR()).filter_by(Num_Rem=ValueNumRem).update({SQLFunction.Num_Rem: Value})
-         elif DATO_MOD == "NUMERO DE PRESENTACION":
-            session.query(MPECR()).filter_by(Num_Pre=ValueNumPre).update({SQLFunction.Num_Pre: Value})
-         elif DATO_MOD == "PESO TOTAL":
-            session.query(MPECR()).filter_by(Total_Weight=ValueTotalW).update({SQLFunction.Total_Weight: Value})
-         elif DATO_MOD == "PESO RETIRADO":
-            session.query(MPECR()).filter_by(Total_WeightR=ValueTotalWR).update({SQLFunction.Total_WeightR: Value})
-         elif DATO_MOD == "NUMERO DE BOBINAS":
-            session.query(MPECR()).filter_by(Num_Coils=ValueCoils).update({SQLFunction.Num_Coils: Value})
-         elif DATO_MOD == "NUMERO DE BOBINAS RETIRADAS":
-            session.query(MPECR()).filter_by(Num_CoilsR=ValuerCoilsR).update({SQLFunction.Num_CoilsR: Value})
-         elif DATO_MOD == "UNIDAD DE MEDIDA":
-            session.query(MPECR()).filter_by(Measurement=ValueMe).update({SQLFunction.Measurement: Value})
-      elif NameTable == "ENKA ESTIBAS":
-         valueCodeB, ValueNumPre, ValueNumRem, ValueCoils, ValuerCoilsR, ValueTotalW, ValueTotalWR, ValueMe = SQLFunction.FindMPPR(
-            NameTable, TABLA, REMISION)
-         if DATO_MOD == "CODIGO DE BARRAS":
-            session.query(MPEER()).filter_by(CodeB=valueCodeB).update({SQLFunction.CodeB: Value})
-         elif DATO_MOD == "NUMERO DE REMISION":
-            session.query(MPEER()).filter_by(Num_Rem=ValueNumRem).update({SQLFunction.Num_Rem: Value})
-         elif DATO_MOD == "NUMERO DE PRESENTACION":
-            session.query(MPEER()).filter_by(Num_Pre=ValueNumPre).update({SQLFunction.Num_Pre: Value})
-         elif DATO_MOD == "PESO TOTAL":
-            session.query(MPEER()).filter_by(Total_Weight=ValueTotalW).update({SQLFunction.Total_Weight: Value})
-         elif DATO_MOD == "PESO RETIRADO":
-            session.query(MPEER()).filter_by(Total_WeightR=ValueTotalWR).update({SQLFunction.Total_WeightR: Value})
-         elif DATO_MOD == "NUMERO DE BOBINAS":
-            session.query(MPEER()).filter_by(Num_Coils=ValueCoils).update({SQLFunction.Num_Coils: Value})
-         elif DATO_MOD == "NUMERO DE BOBINAS RETIRADAS":
-            session.query(MPEER()).filter_by(Num_CoilsR=ValuerCoilsR).update({SQLFunction.Num_CoilsR: Value})
-         elif DATO_MOD == "UNIDAD DE MEDIDA":
-            session.query(MPEER()).filter_by(Measurement=ValueMe).update({SQLFunction.Measurement: Value})
-      elif NameTable == "IMPORTADO CAJA":
-         valueCodeB, ValueNumPre, ValueNumRem, ValueCoils, ValuerCoilsR, ValueTotalW, ValueTotalWR, ValueMe = SQLFunction.FindMPPR(
-            NameTable, TABLA, REMISION)
-         if DATO_MOD == "CODIGO DE BARRAS":
-            session.query(MPICR()).filter_by(CodeB=valueCodeB).update({SQLFunction.CodeB: Value})
-         elif DATO_MOD == "NUMERO DE REMISION":
-            session.query(MPICR()).filter_by(Num_Rem=ValueNumRem).update({SQLFunction.Num_Rem: Value})
-         elif DATO_MOD == "NUMERO DE PRESENTACION":
-            session.query(MPICR()).filter_by(Num_Pre=ValueNumPre).update({SQLFunction.Num_Pre: Value})
-         elif DATO_MOD == "PESO TOTAL":
-            session.query(MPICR()).filter_by(Total_Weight=ValueTotalW).update({SQLFunction.Total_Weight: Value})
-         elif DATO_MOD == "PESO RETIRADO":
-            session.query(MPICR()).filter_by(Total_WeightR=ValueTotalWR).update({SQLFunction.Total_WeightR: Value})
-         elif DATO_MOD == "NUMERO DE BOBINAS":
-            session.query(MPICR()).filter_by(Num_Coils=ValueCoils).update({SQLFunction.Num_Coils: Value})
-         elif DATO_MOD == "NUMERO DE BOBINAS RETIRADAS":
-            session.query(MPICR()).filter_by(Num_CoilsR=ValuerCoilsR).update({SQLFunction.Num_CoilsR: Value})
-         elif DATO_MOD == "UNIDAD DE MEDIDA":
-            session.query(MPICR()).filter_by(Measurement=ValueMe).update({SQLFunction.Measurement: Value})
-      else:
-         valueCodeB, ValueNumPre, ValueNumRem, ValueCoils, ValuerCoilsR, ValueTotalW, ValueTotalWR, ValueMe = SQLFunction.FindMPPR(
-            NameTable, TABLA, REMISION)
-         if DATO_MOD == "CODIGO DE BARRAS":
-            session.query(MPIER()).filter_by(CodeB=valueCodeB).update({SQLFunction.CodeB: Value})
-         elif DATO_MOD == "NUMERO DE REMISION":
-            session.query(MPIER()).filter_by(Num_Rem=ValueNumRem).update({SQLFunction.Num_Rem: Value})
-         elif DATO_MOD == "NUMERO DE PRESENTACION":
-            session.query(MPIER()).filter_by(Num_Pre=ValueNumPre).update({SQLFunction.Num_Pre: Value})
-         elif DATO_MOD == "PESO TOTAL":
-            session.query(MPIER()).filter_by(Total_Weight=ValueTotalW).update({SQLFunction.Total_Weight: Value})
-         elif DATO_MOD == "PESO RETIRADO":
-            session.query(MPIER()).filter_by(Total_WeightR=ValueTotalWR).update({SQLFunction.Total_WeightR: Value})
-         elif DATO_MOD == "NUMERO DE BOBINAS":
-            session.query(MPIER()).filter_by(Num_Coils=ValueCoils).update({SQLFunction.Num_Coils: Value})
-         elif DATO_MOD == "NUMERO DE BOBINAS RETIRADAS":
-            session.query(MPIER()).filter_by(Num_CoilsR=ValuerCoilsR).update({SQLFunction.Num_CoilsR: Value})
-         elif DATO_MOD == "UNIDAD DE MEDIDA":
-            session.query(MPIER()).filter_by(Measurement=ValueMe).update({SQLFunction.Measurement: Value})
+      N_Table = SQLFunction.WhichTable(NameTable)
+      valueCodeB, ValueNumPre, ValueNumRem, ValueCoils, ValuerCoilsR, ValueTotalW, ValueTotalWR, ValueMe = SQLFunction.FindMPPR(NameTable, TABLA, REMISION)
+      if DATO_MOD == Settings.Var_Comp1(): session.query(N_Table).filter_by(CodeB=valueCodeB).update({N_Table.CodeB: Value})
+      elif DATO_MOD == Settings.Var_Comp2(): session.query(N_Table).filter_by(Num_Rem=ValueNumRem).update({N_Table.Num_Rem: Value})
+      elif DATO_MOD == Settings.Var_Comp3(): session.query(N_Table).filter_by(Num_Pre=ValueNumPre).update({N_Table.Num_Pre: Value})
+      elif DATO_MOD == Settings.Var_Comp4(): session.query(N_Table).filter_by(Total_Weight=ValueTotalW).update({N_Table.Total_Weight: Value})
+      elif DATO_MOD == Settings.Var_Comp5(): session.query(N_Table).filter_by(Total_WeightR=ValueTotalWR).update({N_Table.Total_WeightR: Value})
+      elif DATO_MOD == Settings.Var_Comp6(): session.query(N_Table).filter_by(Num_Coils=ValueCoils).update({N_Table.Num_Coils: Value})
+      elif DATO_MOD == Settings.Var_Comp7(): session.query(N_Table).filter_by(Num_CoilsR=ValuerCoilsR).update({N_Table.Num_CoilsR: Value})
+      else: session.query(N_Table).filter_by(Measurement=ValueMe).update({N_Table.Measurement: Value})
       session.commit()
       session.close()
+
+   def CreateTable(NameTable:str, TABLA: str):
+      engine = create_engine(TABLA, echo=True)
+      Tabla = SQLFunction.WhichTable(NameTable)
+      Tabla.metadata.create_all(engine)
+
+   def WhichTable(NameTable: str):
+      if NameTable == Settings.Var_EC(): return MPECR
+      elif NameTable == Settings.Var_EE(): return MPEER
+      elif NameTable == Settings.Var_IC(): return MPICR
+      elif NameTable == Settings.Var_IE(): return MPIER

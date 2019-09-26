@@ -73,13 +73,13 @@ class SQLMT(Base):
       Session = sessionmaker(bind=engine)
       session = Session()
       ValueCode, ValueNumCoils, ValueWeight, ValueMeasurament = SQLMT.FindMT(CODE)
-      if DATO_MOD == Settings.Var_Comp9(): session.query(SQLMT).filter_by(CodeB=ValueCode).update({SQLMT.CodeB: Value})
-      elif DATO_MOD == Settings.Var_Comp15(): session.query(SQLMT).filter_by(Num_Coils=ValueNumCoils).update({SQLMT.Num_Coils: Value})
-      elif DATO_MOD == Settings.Var_Comp14(): session.query(SQLMT).filter_by(Weight=ValueWeight).update({SQLMT.Weight: Value})
-      elif DATO_MOD == Settings.Var_Comp13(): session.query(SQLMT).filter_by(Measurament=ValueMeasurament).update({SQLMT.Measurament: Value})
+      if DATO_MOD == Settings.Var_Comp1(): session.query(SQLMT).filter_by(CodeB=ValueCode).update({SQLMT.CodeB: Value})
+      elif DATO_MOD == Settings.Var_Comp6(): session.query(SQLMT).filter_by(Num_Coils=ValueNumCoils).update({SQLMT.Num_Coils: Value})
+      elif DATO_MOD == Settings.Var_Comp8(): session.query(SQLMT).filter_by(Weight=ValueWeight).update({SQLMT.Weight: Value})
+      elif DATO_MOD == Settings.Var_Comp32(): session.query(SQLMT).filter_by(Measurament=ValueMeasurament).update({SQLMT.Measurament: Value})
       session.commit()
       session.close()
 
-   def CreateMM():
+   def CreateMT():
       engine = create_engine(Settings.Dir_BD(), echo=True)
       Base.metadata.create_all(bind=engine)

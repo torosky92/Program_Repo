@@ -75,11 +75,11 @@ class findMP:
         elif ItemToFind == Settings.Var_Comp20(): return FinalDate
         elif ItemToFind == Settings.Var_Comp1(): return CodeBr
 
-    def FindObjMP(Table:str, REF: str):
+    def FindObjMP(Table:str, REF):
         if Table == Settings.Var_Process1():
             Type = Settings.Dir_BD()
         else:
             Type = Settings.Dir_PBD()
         Ref, Worker, Provider, Reference, Presentation, Num_Rem, Num_Pre, Total_Weight, Initial_Date, Final_Date, CodeB, Num_Coils = \
             SQLMP.FindMP(Type, REF)
-        return (Provider, Reference, Presentation)
+        return (Reference, Presentation)

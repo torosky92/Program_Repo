@@ -26,7 +26,7 @@ class Settings:
     def Var_IC(): return 'IMPORTADOS CAJA'
     def Var_IE(): return 'IMPORTADOS ESTIBAS'
 
-    def Var_P1(): return 'CAJA'
+    def Var_P1(): return 'CAJAS'
     def Var_P2(): return 'ESTIBAS'
 
     def Var_Process1(): return 'NORMAL'
@@ -122,4 +122,11 @@ class Settings:
     def PRO4(): return 'PROCESO DE ALMACENAMIENTO'
 
     def PP(): return 'MEDEJAS'
-    def PP2(): return  'CONOS'
+    def PP2(): return 'CONOS'
+    def PP3(): return 'BOBINAS'
+
+    def ACC(): return 'ACCESO TOTAL'
+    def ACC2(): return 'ACCESO AL PROGRAMA'
+
+    def PR(): return 'NUEVO PROCESO'
+    def PR2(): return 'PROCESO'

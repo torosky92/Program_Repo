@@ -34,11 +34,8 @@ class findMPPR:
                     New_TotalW.append(TotalW2[x])
                     New_TotalWR.append(TotalWR2[x])
                     New_Measure.append(Measure2[x])
-        SQLFunction.DeleteALLMPPR(NameTable, Settings.Dir_CBDR())
         SQLFunction.DeleteALLMPPR(NameTable, Settings.Dir_BDR())
         for x in range(len(New_CodeB)):
-            SQLFunction.AddMPPR(NameTable, Settings.Dir_CBDR(), New_CodeB[x], New_NumRem[x], New_NumPre[x], New_NumCoils[x],
-                              New_NumCoilsR[x], New_TotalW[x], New_TotalWR[x], New_Measure[x])
             SQLFunction.AddMPPR(NameTable, Settings.Dir_BDR(), New_CodeB[x], New_NumRem[x], New_NumPre[x], New_NumCoils[x],
                               New_NumCoilsR[x], New_TotalW[x], New_TotalWR[x], New_Measure[x])
 
@@ -57,7 +54,7 @@ class findMPPR:
             Type = Settings.Dir_BDR()
         else:
             Type = Settings.Dir_PBDR()
-        CodeB, Num_Pre, Num_Rem, Num_Coils, Num_CoilsR, Total_Weight, Total_WeightR, Measurement = SQLFunction.FindsMPPR(NameTable, Type, REF)
+        CodeB, Num_Pre, Num_Rem, Num_Coils, Num_CoilsR, Total_Weight, Total_WeightR, Measurement = SQLFunction.FindCodeBMPPR(NameTable, Type, REF)
         return (CodeB)
 
     def FindESMPPR(Provider: str, Presentation: str, Table:str, REF: str):
@@ -75,5 +72,5 @@ class findMPPR:
             Type = Settings.Dir_BDR()
         else:
             Type = Settings.Dir_PBDR()
-        CodeB, Num_Pre, Num_Rem, Num_Coils, Num_CoilsR, Total_Weight, Total_WeightR, Measurement = SQLFunction.FindMPPR(NameTable, Type, REF)
-        return (Num_Coils, Num_CoilsR, Total_Weight, Total_WeightR)
+        CodeBr, NumPre, NumRem, NumCoils, NumCoilsR, TotalW, TotalWR, Measure = SQLFunction.FindsMPPR(NameTable, Type, REF)
+        return (NumCoils, NumCoilsR, TotalW, TotalWR)

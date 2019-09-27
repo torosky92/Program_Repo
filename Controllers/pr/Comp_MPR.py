@@ -87,5 +87,5 @@ class findMPR:
             Type = Settings.Dir_BDR()
         else:
             Type = Settings.Dir_PBDR()
-        Ref, Worker, Provider, Reference, Presentation, Num_Rem, Num_Pre, Num_Coils, Num_CoilsR, Total_Weight, Total_WeightR, Initial_Date, Final_Date, CodeB = SQLMPR.FindMPR(Type, REF)
-        return (Provider, Reference, Presentation)
+        Refs, Workers, Providers, References2, Presentations, NumRems, NumPres, NumCoils, NumCoilsR, TotalWeight, TotalWeightR, InitialDate, FinalDate, CodeBr = SQLMPR.FindMPR(Type, REF)
+        return (Providers, References2, Presentations)

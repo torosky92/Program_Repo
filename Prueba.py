@@ -74,7 +74,15 @@ from Settings import Settings
 #SQLMM.DeleteMM(Settings.Dir_CBD(),"98788233")
 #SQLMM.DeleteALL(Settings.Dir_CBD())
 
-from sql.pmp.SQL_PI import SQLPI
+
 #SQLPI.AddPI(Settings.Dir_CBD(),"3","23445233","324","3245",234,12,32.5,"kg")
 #SQLPI.DeletePI(Settings.Dir_CBD(),"3244")
-SQLPI.DeleteALL(Settings.Dir_CBD())
+#SQLMT.AddMT("343828",6,24.16,"kg")
+#SQLMT.DeleteALL()
+
+from Data.pr.Upgrade_BD_BDR import Upgrade
+Upgrade.UpgradeMP()
+Upgrade.UpgradeMPP(Settings.Var_EC())
+Upgrade.UpgradeMPP(Settings.Var_EE())
+Upgrade.UpgradeMPP(Settings.Var_IC())
+Upgrade.UpgradeMPP(Settings.Var_IE())

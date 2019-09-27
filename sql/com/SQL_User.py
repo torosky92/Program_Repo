@@ -74,7 +74,7 @@ class SQLUser(Base):
                 return (IDD.Name, IDD.Per3)
              elif PROCESS == Settings.PRO4():
                  return (IDD.Name, IDD.Per4)
-      return SettingsUs.Var_KNOW(), "0"
+      return (SettingsUs.Var_KNOW(), 0)
 
    def FindESUser(TABLA: str, ID: str):
          engine = create_engine(TABLA, echo=True)

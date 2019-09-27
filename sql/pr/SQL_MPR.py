@@ -30,7 +30,7 @@ class SQLMPR(Base):
       ref = session.query(SQLMPR).all()
       session.close()
       for References in ref:
-         if References.Ref == REFERENCE:
+         if References.Num_Rem == REFERENCE:
             return (References.Ref, References.Worker, References.Provider, References.Reference, References.Presentation,
                     References.Num_Rem, References.Num_Pre, References.Num_Coils, References.Num_CoilsR, References.Total_Weight,
                     References.Total_WeightR, References.Initial_Date, References.Final_Date, References.CodeB)

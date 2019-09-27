@@ -35,15 +35,15 @@ class SQLFunction:
       ref = session.query(SQLFunction.WhichTable(NameTable)).all()
       session.close()
       for References in ref:
-         if References.CodeB == REFERENCE:
-            return (References.CodeB, References.Num_Pre, References.Num_Rem, References.Num_Coils, References.Num_CoilsR,
-                    References.Total_Weight, References.Total_WeightR, References.Measurement)
+         if References.Num_Rem == REFERENCE:
+            return (References.CodeB, References.Num_Pre, References.Num_Rem, References.Num_Coils, References.Num_CoilsR, References.Total_Weight, References.Total_WeightR, References.Measurement)
 
-   def FindsMPPR(NameTable: str, TABLA: str, REFERENCE: str):
+   def FindCodeBMPPR(NameTable: str, TABLA: str, REFERENCE: str):
       engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       ref = session.query(SQLFunction.WhichTable(NameTable)).all()
+      session.close()
       CodeBr = []
       NumPre = []
       NumRem = []
@@ -62,8 +62,18 @@ class SQLFunction:
             TotalW.append(References.Total_Weight)
             TotalWR.append(References.Total_WeightR)
             Measure.append(References.Measurement)
-      session.close()
       return (CodeBr, NumPre, NumRem, NumCoils, NumCoilsR, TotalW, TotalWR, Measure)
+
+   def FindsMPPR(NameTable: str, TABLA: str, REFERENCE: str):
+      engine = create_engine(TABLA, echo=True)
+      Session = sessionmaker(engine)
+      session = Session()
+      ref = session.query(SQLFunction.WhichTable(NameTable)).all()
+      session.close()
+      for References in ref:
+         if References.CodeB == REFERENCE:
+            return (References.CodeB, References.Num_Pre, References.Num_Rem, References.Num_Coils, References.Num_CoilsR, References.Total_Weight, References.Total_WeightR, References.Measurement)
+      return (REFERENCE, "0", "0", 0, 0, 0, 0, "kg")
 
    def FindALLMPPR(NameTable: str, TABLA: str):
       engine = create_engine(TABLA, echo=True)

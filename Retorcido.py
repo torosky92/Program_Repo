@@ -1,33 +1,42 @@
 import sys
 import datetime, time
 
-from PyQt5 import QtWidgets  #, uic, QtGui
-from PyQt5.QtWidgets import QMessageBox#, QPushButton, QApplication
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 
 from Settings import Settings
 from SettingsUser import SettingsUs
+
+from bin.pr.Remove_PR import RemoveDataPR
+from bin.pr.Add_PR import AddDataPR
+from bin.pr.Process_PR import ProcessPR
+from bin.pr.Want_CodePR import WantCodePR
+from bin.pr.Want_VapPR import WantVapPR
+from bin.Main import Ui_MainWindow
+from bin.MadeBy import MadeBy
+
 from Controllers.pr.Comp_MPR import findMPR
 from Controllers.pr.Comp_MPPR import findMPPR
 from Controllers.port.RFID import Rfid
-from bin.Main import Ui_MainWindow
-from bin.MadeBy import MadeBy
+
 
 class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
+        self.CB1_4.close()
         #----------------  Data Update  ----------------#
         #UpgradeData.Upgrade(self)
-        # ----------------  Block labels ----------------#
-        self.CB1_3.setReadOnly(True)
         # ----------------  Hide Vap  ----------------#
         self.VAP.close()
         # ----------------  Check if we want to vaporize  ----------------#
+        self.VAP_2.stateChanged.connect(self.Want_to_find)
+        # ----------------  Check if we want to vaporize  ----------------#
         self.VAP.stateChanged.connect(self.Want_Vap)
         # ----------------  Add Item to the list Proceso  ----------------#
-        self.Proceso.addItem("Normal")
-        self.Proceso.addItem("Pruebas")
+        self.Proceso.addItem(Settings.Var_Process1())
+        self.Proceso.addItem(Settings.Var_Process2())
         # ----------------  Push button for find User  ----------------#
         self.RFID.clicked.connect(self.USER)
         # ----------------  Push button for Change User  ----------------#
@@ -69,61 +78,23 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # ----------------  If you push button find code bar  ----------------#
     def FindCodeBar(self):
-        # ----------------  To unlock labels  ----------------#
-        self.CB1_3.setReadOnly(False)
-        # ----------------  Find to coils and weight  ----------------#
-        if self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "":
-            self.Num_Coils, self.Num_CoilsR, self.TotalWeight, self.TotalWeightR = findMPPR.FindESMPPR(self.PROVIDER, self.PRESENTATION, str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
+        if self.TypeProcess == Settings.PP2():
+            self.Available, self.Quantity, self.Weight, self.TotalWeight, self.TotalWeightR, self.Num_Coils, self.Num_CoilsR = ProcessPR.findBar(self,self.Provider,self.Presentation)
+        if self.Num_Coils > 0:
+            if self.Available:
+                # ______________ Deactivate push button for find ______________ #
+                self.VAP_2.setEnabled(False)
+                self.PUB.setText("%.2f" % (self.Weight,))
+                QMessageBox.about(self, "Redepesca", "¡¡SOLO HAY EN ESTA " + str(self.Presentation) + " " + str(Quantity) + " DISPONIBLE!!")
+            else:
+                QMessageBox.about(self, "Redepesca", "¡¡NO HAY BOBINA DISPONIBLE!!")
         else:
-            self.Num_Coils, self.Num_CoilsR, self.TotalWeight, self.TotalWeightR = findMPPR.FindESMPPR(self.PROVIDER, self.PRESENTATION, str(self.Proceso.currentText()), str(self.MAQ_3.currentText()))
-
-        # ----------------  Calculate Weight and it's available  ----------------#
-        self.Available = self.Num_Coils - self.Num_CoilsR
-        self.Weight = self.TotalWeight / self.Num_Coils
-        self.PUB.setText(str(self.Weight))
-        if self.Available < 0:
-            QMessageBox.about(self, "Redepesca", "¡¡NO HAY BOBINA DISPONIBLE!!")
-        else:
-            QMessageBox.about(self, "Redepesca", "¡¡SOLO HAY EN ESTA " + str(self.PRESENTATION) + str(self.Available) +" DISPONIBLE!!")
+            QMessageBox.about(self, "Redepesca", "¡REFERENCIA NO DISPONIBLE!!")
 
     # ----------------  If you push button find lote  ----------------#
     def FindLote(self):
-        # ----------------  Check if you write a text in the box  ----------------#
-        if (self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "") or (
-                self.Proc == "PROCESS" and str(self.MAQ_3.currentText())):
-            # ----------------  Activate push button for find code bar  ----------------#
-            self.BUSCAR.setEnabled(True)
-            if self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "":
-                self.PROVIDER, self.REF, self.PRESENTATION = findMPR.FindObjMPR(str(self.Proceso.currentText()),
-                                                                 str(self.CB1_2.toPlainText()))
-            else:
-                self.PROVIDER, self.REF, self.PRESENTATION = findMPR.FindObjMPR(str(self.Proceso.currentText()),
-                                                                 str(self.MAQ_3.currentText()))
-            # ----------------  Write Reference box  ----------------#
-            self.REF1.setText(str(self.REF))
-            # ----------------  Add Item to the list Retiro  ----------------#
-            self.COB.addItem(str(self.PRESENTATION))
-            self.COB.addItem("Bobina")
-            # ----------------  Deactivate push button for find  ----------------#
-            self.MAQ_3.setEnabled(False)
-            self.CB1_2.setEnabled(False)
-            # ----------------  Find Code Bar  ----------------#
-            #if self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "":
-            #    self.CodeB = findMPPR.FindObjMPECR(self.PROVIDER, self.PRESENTATION, str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
-            #else:
-            #    self.CodeB = findMPPR.FindObjMPECR(self.PROVIDER, self.PRESENTATION, str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
-            # ----------------  Add Item to the list code Bar  ----------------#
-            #for x in range(len(self.CodeB)):
-            #    self.MAQ_2.addItem(str(self.CodeB))
-
-    # ----------------  If you select vaporize  ----------------#
-    def Want_Vap(self):
-        # ----------------  If you check change label to say you want  ----------------#
-        if self.VAP.isChecked():
-            self.VAP.setText("VAPORIZAR")
-        # ----------------  If you don't check change label to say you don't want  ----------------#
-        else:
-            self.VAP.setText("NO VAPORIZAR")
+        if self.TypeProcess == Settings.PP2():
+            self.CodeB, self.Provider, self.Presentation = ProcessPR.findLote(self)
 
     # ----------------  If you push button for New process  ----------------#
     def NPROCESS(self):
@@ -142,37 +113,25 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # ----------------  If you push button for process  ----------------#
     def PROCESS(self):
-        self.Proc = "PROCESS"
-        # ----------------  Activate List for lote  ----------------#
-        self.MAQ_3.show()
-        # ----------------  Activate push button for find Lote ----------------#
-        self.BUSCAR_2.setEnabled(True)
-        # ----------------  To unlock labels  ----------------#
-        self.CB1_3.setReadOnly(False)
-        # ----------------  Deactivate List proceso  ----------------#
-        self.Proceso.setEnabled(False)
-        # ----------------  Deactivate Push button for a Process  ----------------#
-        self.NPRO.setEnabled(False)
-        self.PRO.setEnabled(False)
-        # ----------------  Find all lote and add in a list  ----------------#
-        Ref = findMPR.FindAllItemMPR(str(self.Proceso.currentText()),"Numero de Remision")
-        for x in range(len(Ref)):
-            self.MAQ_3.addItem(str(Ref[x]))
+        self.TypeProcess = ProcessPR.first(self)
+
+    def Want_to_find(self):
+        WantCodePR.find(self)
+
+    # ----------------  If you select vaporize  ----------------#
+    def Want_Vap(self):
+        WantVapPR.Select(self)
 
     # ----------------  If you push button for user  ----------------#
     def USER(self):
+        # ----------------  First time to add correct user  ----------------#
         if str(self.OP1.toPlainText()) == "" or str(self.OP1.toPlainText()) == SettingsUs.Var_KNOW():
-            User, Permition = Rfid.Rfid_Read(self, Settings.PRO3())
-            today = datetime.datetime.today()
-            if User != SettingsUs.Var_KNOW:
-                self.OP1.setText(str(User))
-                if User != SettingsUs.Var_KNOW():
-                    self.ANO.setText(str(today.year))
-                    self.MES.setText(str(today.month))
-                    self.DIA.setText(str(today.day))
-                    self.HORA.setText(str(time.strftime("%H:%M:%S")))
-                    self.PRO.setEnabled(True)
-                    self.NPRO.setEnabled(True)
+            User, Permition, Access = Rfid.Rfid_Read(self, Settings.PRO3(),Settings.ACC2())
+            AddDataPR.first(self, User, Access)
+        # ----------------  If you want to delet all, first find a user permition  ----------------#
+        else:
+            User, Permition, Access = Rfid.Rfid_Read(self, Settings.PRO3(), Settings.ACC())
+            RemoveDataPR.All(self, Access)
 
     # ----------------  If you push button for configure PORT  ----------------#
     #def Configure_PORT(self):

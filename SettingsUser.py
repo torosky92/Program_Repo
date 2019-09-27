@@ -1,5 +1,5 @@
 class SettingsUs:
-    def Var_KNOW(): return ('NO ENCONTRADO', 0)
+    def Var_KNOW(): return 'NO ENCONTRADO'
     def Ref_User1(): return 'CEDULA'
     def Ref_User2(): return 'NOMBRE'
     def Ref_User3(): return 'PERMISO 1'
@@ -48,3 +48,8 @@ class SettingsUs:
     def Ref_User46(): return 'TALLA DE ZAPATOS'
     def Ref_User47(): return 'CURSO DE ALTURAS'
     def Ref_User48(): return 'CERTIFICADO DE ALTURAS'
+    def Ref_User49(): return 'IDENTIFICACION'
+    def Ref_User50(): return 'NUMERO DE IDENTIFIACION'
+    def Ref_User51(): return 'SUCURSAL'
+    def Ref_User52(): return 'DEPARTAMENTO'
+    def Ref_User53(): return 'CIUDAD'

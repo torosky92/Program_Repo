@@ -9,8 +9,8 @@ class SQLToken(Base):
    __tablename__ = 'LINK'
    Token = Column("TOKEN", String, primary_key=True)
 
-   def FindToken():
-      engine = create_engine(Settings.Dir_PW(), echo=True)
+   def FindToken(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Base.metadata.create_all(engine)
       Session = sessionmaker(engine)
       session =Session()
@@ -19,8 +19,8 @@ class SQLToken(Base):
       for ID in id:
          return ID.Token
 
-   def UpdateToken(TOKEN: str):
-      engine = create_engine(Settings.Dir_PW(), echo=True)
+   def UpdateToken(TABLA: str, TOKEN: str):
+      engine = create_engine(TABLA, echo=True)
       Base.metadata.create_all(bind=engine)
       Session = sessionmaker(bind=engine)
       session = Session()

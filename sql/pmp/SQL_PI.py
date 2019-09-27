@@ -16,8 +16,8 @@ class SQLPI(Base):
    Weight = Column("PESO_PEDIDO", Float)
    Measurement = Column("UNIDAD_MEDIDA", String)
 
-   def FindALLPI():
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+   def FindALLPI(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       ref = session.query(SQLPI).all()
@@ -39,8 +39,8 @@ class SQLPI(Base):
          New_Measurement.append(References.Measurement)
       return (New_CodeB, New_Ref2, New_NumRem, New_NumPre, New_NumCoils, New_Weight, New_Measurement)
 
-   def FindPI(REFERENCE: str):
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+   def FindPI(TABLA: str, REFERENCE: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       ref = session.query(SQLPI).all()
@@ -50,9 +50,9 @@ class SQLPI(Base):
             return (References.CodeB, References.Ref2, References.Num_Rem, References.Num_Pre,
                     References.Num_Coils, References.Weight, References.Measurement)
 
-   def AddPI(REF:int, CODE: str, NUM_REC: str, NUM_REM: str, NUM_PRE: int,
+   def AddPI(TABLA: str, REF:int, CODE: str, NUM_REC: str, NUM_REM: str, NUM_PRE: int,
              NUM_COILS: int, WEIGHT: float, MEASUREMENT: str):
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+      engine = create_engine(TABLA, echo=True)
       Base.metadata.create_all(engine)
       Session = sessionmaker(engine)
       session = Session()
@@ -69,27 +69,27 @@ class SQLPI(Base):
       session.commit()
       session.close()
 
-   def DeletePI(REMISION: str):
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+   def DeletePI(TABLA: str, REMISION: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLPI).filter_by(Ref2=REMISION).delete()
       session.commit()
       session.close()
 
-   def DeleteALLPI():
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+   def DeleteALLPI(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLPI).delete()
       session.commit()
       session.close()
 
-   def UpdatePI(REMISION: str, DATO_MOD, Value):
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+   def UpdatePI(TABLA: str, REMISION: str, DATO_MOD, Value):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
-      valueCodeB, ValueRef2, ValueRem, ValueNumPre, ValueCoils, ValueW, ValueMeasurement = SQLPI.FindPI(REMISION)
+      valueCodeB, ValueRef2, ValueRem, ValueNumPre, ValueCoils, ValueW, ValueMeasurement = SQLPI.FindPI(TABLA, REMISION)
       if DATO_MOD == Settings.Var_Comp9(): session.query(SQLPI).filter_by(Ref2=ValueRef2).update({SQLPI.Ref2: Value})
       elif DATO_MOD == Settings.Var_Comp1(): session.query(SQLPI).filter_by(CodeB=valueCodeB).update({SQLPI.CodeB: Value})
       elif DATO_MOD == Settings.Var_Comp2(): session.query(SQLPI).filter_by(Num_Rem=ValueRem).update({SQLPI.Num_Rem: Value})
@@ -100,6 +100,6 @@ class SQLPI(Base):
       session.commit()
       session.close()
 
-   def CreatePI():
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+   def CreatePI(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Base.metadata.create_all(bind=engine)

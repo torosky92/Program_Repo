@@ -13,8 +13,8 @@ class SQLMT(Base):
    Weight = Column("PESO_NETO", Float)
    Measurament = Column("UNIDAD_DE_MEDIDA", String)
 
-   def FindMT(CODE: str):
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+   def FindMT(TABLA: str, CODE: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       ref = session.query(SQLMT).all()
@@ -23,8 +23,8 @@ class SQLMT(Base):
          if References.CodeB == CODE:
             return (References.CodeB, References.Num_Coils, References.Weight, References.Measurament)
 
-   def FindALLMT():
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+   def FindALLMT(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       ref = session.query(SQLMT).all()
@@ -40,8 +40,8 @@ class SQLMT(Base):
          New_Measurament.append(References.Measurament)
       return (New_CodeB, New_NumCoils, New_Weight, New_Measurament)
 
-   def AddMT(CODE: str, NUM_COILS: int, WEIGHT: float, MEASURAMENT: str):
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+   def AddMT(TABLA: str, CODE: str, NUM_COILS: int, WEIGHT: float, MEASURAMENT: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       MM = SQLMT()
@@ -53,27 +53,27 @@ class SQLMT(Base):
       session.commit()
       session.close()
 
-   def DeleteMT(CODE: str):
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+   def DeleteMT(TABLA: str, CODE: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLMT).filter_by(CodeB=CODE).delete()
       session.commit()
       session.close()
 
-   def DeleteALLMT():
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+   def DeleteALLMT(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLMT).delete()
       session.commit()
       session.close()
 
-   def UpdateMT(CODE: str, DATO_MOD, Value):
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+   def UpdateMT(TABLA: str, CODE: str, DATO_MOD, Value):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
-      ValueCode, ValueNumCoils, ValueWeight, ValueMeasurament = SQLMT.FindMT(CODE)
+      ValueCode, ValueNumCoils, ValueWeight, ValueMeasurament = SQLMT.FindMT(TABLA, CODE)
       if DATO_MOD == Settings.Var_Comp1(): session.query(SQLMT).filter_by(CodeB=ValueCode).update({SQLMT.CodeB: Value})
       elif DATO_MOD == Settings.Var_Comp6(): session.query(SQLMT).filter_by(Num_Coils=ValueNumCoils).update({SQLMT.Num_Coils: Value})
       elif DATO_MOD == Settings.Var_Comp8(): session.query(SQLMT).filter_by(Weight=ValueWeight).update({SQLMT.Weight: Value})
@@ -81,6 +81,6 @@ class SQLMT(Base):
       session.commit()
       session.close()
 
-   def CreateMT():
-      engine = create_engine(Settings.Dir_BD(), echo=True)
+   def CreateMT(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Base.metadata.create_all(bind=engine)

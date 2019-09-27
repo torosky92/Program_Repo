@@ -1,29 +1,15 @@
-import os, sys
+import sys
 import datetime, time
-import numpy as np
 
-from PyQt5 import  QtCore, QtGui, QtWidgets, QtSvg#, uic, QtGui
-from PyQt5.QtWidgets import QApplication, QInputDialog, QLineEdit, QMessageBox#, QPushButton, QApplication
-from PyQt5.QtCore import QModelIndex, pyqtSignal, QByteArray, QIODevice, QBuffer, Qt
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5 import QtWidgets  #, uic, QtGui
+from PyQt5.QtWidgets import QMessageBox#, QPushButton, QApplication
 
-from Controllers.Comp_MFR import findMFR
-from Controllers.COMP_MPR import findMPR
-from Controllers.Comp_MR import findMONT
-from Controllers.Comp_PP import findPP
-from Controllers.Comp_TABLA import findTABLA
-from Controllers.Comp_MPECR import findMPECR
-from Controllers.Comp_MPEER import findMPEER
-from Controllers.Comp_MPICR import findMPICR
-from Controllers.Comp_MPIER import findMPIER
-from Controllers.Comp_PM import findPM
-from Controllers.Comp_P import findP
-from Cont.Upgrade_Data import UpgradeData
-from bin.RFID import Rfid
-from bin.GENERATOR_CODE import GeneratorCode
+from Settings import Settings
+from SettingsUser import SettingsUs
+from Controllers.pr.Comp_MPR import findMPR
+from Controllers.pr.Comp_MPPR import findMPPR
+from Controllers.port.RFID import Rfid
 from bin.Main import Ui_MainWindow
-from bin.Help_Window import HelpWindow
-from bin.Conf_COM import ConfCOM
 from bin.MadeBy import MadeBy
 
 class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -86,28 +72,11 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         # ----------------  To unlock labels  ----------------#
         self.CB1_3.setReadOnly(False)
         # ----------------  Find to coils and weight  ----------------#
-        if self.PROVIDER == "ENKA":
-            if self.PRESENTATION == "CAJAS":
-                if self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "":
-                    self.Num_Coils, self.Num_CoilsR, self.TotalWeight, self.TotalWeightR = findMPECR.FindESMPECR(str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
-                else:
-                    self.Num_Coils, self.Num_CoilsR, self.TotalWeight, self.TotalWeightR = findMPECR.FindESMPECR(str(self.Proceso.currentText()), str(self.MAQ_3.currentText()))
-            else:
-                if self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "":
-                    self.Num_Coils, self.Num_CoilsR, self.TotalWeight, self.TotalWeightR = findMPEER.FindESMPEER(str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
-                else:
-                    self.Num_Coils, self.Num_CoilsR, self.TotalWeight, self.TotalWeightR = findMPEER.FindESMPEER(str(self.Proceso.currentText()), str(self.MAQ_3.currentText()))
+        if self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "":
+            self.Num_Coils, self.Num_CoilsR, self.TotalWeight, self.TotalWeightR = findMPPR.FindESMPPR(self.PROVIDER, self.PRESENTATION, str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
         else:
-            if self.PRESENTATION == "CAJAS":
-                if self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "":
-                    self.Num_Coils, self.Num_CoilsR, self.TotalWeight, self.TotalWeightR = findMPICR.FindESMPICR(str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
-                else:
-                    self.Num_Coils, self.Num_CoilsR, self.TotalWeight, self.TotalWeightR = findMPICR.FindESMPICR(str(self.Proceso.currentText()), str(self.MAQ_3.currentText()))
-            else:
-                if self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "":
-                    self.Num_Coils, self.Num_CoilsR, self.TotalWeight, self.TotalWeightR = findMPIER.FindESMPIER(str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
-                else:
-                    self.Num_Coils, self.Num_CoilsR, self.TotalWeight, self.TotalWeightR = findMPIER.FindESMPIER(str(self.Proceso.currentText()), str(self.MAQ_3.currentText()))
+            self.Num_Coils, self.Num_CoilsR, self.TotalWeight, self.TotalWeightR = findMPPR.FindESMPPR(self.PROVIDER, self.PRESENTATION, str(self.Proceso.currentText()), str(self.MAQ_3.currentText()))
+
         # ----------------  Calculate Weight and it's available  ----------------#
         self.Available = self.Num_Coils - self.Num_CoilsR
         self.Weight = self.TotalWeight / self.Num_Coils
@@ -139,31 +108,13 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.MAQ_3.setEnabled(False)
             self.CB1_2.setEnabled(False)
             # ----------------  Find Code Bar  ----------------#
-            if self.PROVIDER == "ENKA":
-                if self.PRESENTATION == "CAJAS":
-                    if self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "":
-                        self.CodeB = findMPECR.FindObjMPECR(str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
-                    else:
-                        self.CodeB = findMPECR.FindObjMPECR(str(self.Proceso.currentText()), str(self.MAQ_3.currentText()))
-                else:
-                    if self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "":
-                        self.CodeB = findMPEER.FindObjMPEER(str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
-                    else:
-                        self.CodeB = findMPEER.FindObjMPEER(str(self.Proceso.currentText()), str(self.MAQ_3.currentText()))
-            else:
-                if self.PRESENTATION == "CAJAS":
-                    if self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "":
-                        self.CodeB = findMPICR.FindObjMPICR(str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
-                    else:
-                        self.CodeB = findMPICR.FindObjMPICR(str(self.Proceso.currentText()), str(self.MAQ_3.currentText()))
-                else:
-                    if self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "":
-                        self.CodeB = findMPIER.FindObjMPIER(str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
-                    else:
-                        self.CodeB = findMPIER.FindObjMPIER(str(self.Proceso.currentText()), str(self.MAQ_3.currentText()))
+            #if self.Proc == "NEW PROCESS" and str(self.CB1_2.toPlainText()) != "":
+            #    self.CodeB = findMPPR.FindObjMPECR(self.PROVIDER, self.PRESENTATION, str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
+            #else:
+            #    self.CodeB = findMPPR.FindObjMPECR(self.PROVIDER, self.PRESENTATION, str(self.Proceso.currentText()), str(self.CB1_2.toPlainText()))
             # ----------------  Add Item to the list code Bar  ----------------#
-            for x in range(len(self.CodeB)):
-                self.MAQ_2.addItem(str(self.CodeB))
+            #for x in range(len(self.CodeB)):
+            #    self.MAQ_2.addItem(str(self.CodeB))
 
     # ----------------  If you select vaporize  ----------------#
     def Want_Vap(self):
@@ -210,17 +161,18 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # ----------------  If you push button for user  ----------------#
     def USER(self):
-        if str(self.OP1.toPlainText()) == "":
-            User, Permition = Rfid.Rfid_Read(self)
+        if str(self.OP1.toPlainText()) == "" or str(self.OP1.toPlainText()) == SettingsUs.Var_KNOW():
+            User, Permition = Rfid.Rfid_Read(self, Settings.PRO3())
             today = datetime.datetime.today()
-            if User != "No encontrado":
+            if User != SettingsUs.Var_KNOW:
                 self.OP1.setText(str(User))
-                self.ANO.setText(str(today.year))
-                self.MES.setText(str(today.month))
-                self.DIA.setText(str(today.day))
-                self.HORA.setText(str(time.strftime("%H:%M:%S")))
-        self.PRO.setEnabled(True)
-        self.NPRO.setEnabled(True)
+                if User != SettingsUs.Var_KNOW():
+                    self.ANO.setText(str(today.year))
+                    self.MES.setText(str(today.month))
+                    self.DIA.setText(str(today.day))
+                    self.HORA.setText(str(time.strftime("%H:%M:%S")))
+                    self.PRO.setEnabled(True)
+                    self.NPRO.setEnabled(True)
 
     # ----------------  If you push button for configure PORT  ----------------#
     #def Configure_PORT(self):

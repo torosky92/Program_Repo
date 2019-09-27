@@ -10,8 +10,8 @@ class SQLCC(Base):
    Id = Column("ID", Integer, primary_key=True)
    CodeC = Column("CODIGO COLOR", String)
 
-   def FindALLCC():
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def FindALLCC(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session =Session()
       ref = session.query(SQLCC).all()
@@ -21,8 +21,8 @@ class SQLCC(Base):
          CC.append(References.CodeC)
       return CC
 
-   def FindCC(COLOUR: str):
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def FindCC(TABLA: str, COLOUR: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session =Session()
       id = session.query(SQLCC).all()
@@ -31,8 +31,8 @@ class SQLCC(Base):
          if ID.CodeC == COLOUR:
             return (ID.CodeC)
 
-   def AddCC(COLOUR: str):
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def AddCC(TABLA: str, COLOUR: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       CC = SQLCC()
@@ -41,30 +41,30 @@ class SQLCC(Base):
       session.commit()
       session.close()
 
-   def DeleteCC(COLOUR: str):
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def DeleteCC(TABLA: str, COLOUR: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLCC).filter_by(CodeC=COLOUR).delete()
       session.commit()
       session.close()
 
-   def DeleteALLCC():
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def DeleteALLCC(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLCC).delete()
       session.commit()
       session.close()
 
-   def UpdateCC(COLOUR: str, Value: str):
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def UpdateCC(TABLA: str, COLOUR: str, Value: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLCC).filter_by(CodeC=COLOUR).update({SQLCC.CodeC: Value})
       session.commit()
       session.close()
 
-   def CreateCC():
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def CreateCC(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Base.metadata.create_all(bind=engine)

@@ -10,8 +10,8 @@ class SQLST(Base):
    Id = Column("ID", Integer, primary_key=True)
    Stop = Column("PARO", String)
 
-   def FindALLST():
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def FindALLST(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       ref = session.query(SQLST).all()
@@ -21,8 +21,8 @@ class SQLST(Base):
          PARO.append(References.Stop)
       return PARO
 
-   def FindST(REFERENCE: str):
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def FindST(TABLA: str, REFERENCE: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       id = session.query(SQLST).all()
@@ -31,8 +31,8 @@ class SQLST(Base):
          if ID.Id == REFERENCE:
             return (ID.Stop)
 
-   def AddST(STOPED: str):
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def AddST(TABLA: str, STOPED: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       PARO = SQLST()
@@ -41,30 +41,30 @@ class SQLST(Base):
       session.commit()
       session.close()
 
-   def DeleteST(ID: str):
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def DeleteST(TABLA: str, ID: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLST).filter_by(Id=ID).delete()
       session.commit()
       session.close()
 
-   def DeleteALLST():
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def DeleteALLST(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLST).delete()
       session.commit()
       session.close()
 
-   def UpdateST(REFERENCE: str, Value: str):
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def UpdateST(TABLA: str, REFERENCE: str, Value: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLST).filter_by(Stop=REFERENCE).update({SQLST.Stop: Value})
       session.commit()
       session.close()
 
-   def CreateST():
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def CreateST(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Base.metadata.create_all(bind=engine)

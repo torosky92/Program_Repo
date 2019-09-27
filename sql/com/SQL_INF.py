@@ -1,7 +1,6 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, create_engine, BLOB, Integer
 from sqlalchemy.orm import sessionmaker
-from Settings import Settings
 
 Base = declarative_base()
 
@@ -11,8 +10,8 @@ class SQLINF(Base):
    Name = Column("NOMBRE", String)
    Imagen = Column("IMAGEN", BLOB)
 
-   def FindALLInf():
-      engine = create_engine(Settings.Dir_Inf(), echo=True)
+   def FindALLInf(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Base.metadata.create_all(engine)
       Session = sessionmaker(engine)
       session = Session()
@@ -25,8 +24,8 @@ class SQLINF(Base):
          New_Imagen.append(REFERENCE.Imagen)
       return (New_Name, New_Imagen)
 
-   def AddInf(NAME: str, IMAGEN: BLOB):
-      engine = create_engine(Settings.Dir_Inf(), echo=True)
+   def AddInf(TABLA: str, NAME: str, IMAGEN: BLOB):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       MP = SQLINF()
@@ -36,8 +35,8 @@ class SQLINF(Base):
       session.commit()
       session.close()
 
-   def DeleteALLInf():
-      engine = create_engine(Settings.Dir_Inf(), echo=True)
+   def DeleteALLInf(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLINF).delete()

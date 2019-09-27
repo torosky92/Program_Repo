@@ -58,19 +58,26 @@ class SQLUser(Base):
    HeightCourse = Column("REQUIERE_CURSO_DE_ALTURAS", String)
    ValidCourse = Column("VIGENCIA_DE_CURSO_DE_ALTURAS", String)
 
-   def FindUser(ID: str):
-      engine = create_engine(Settings.Dir_OP(), echo=True)
+   def FindUser(TABLA: str, ID: str, PROCESS: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       ids = session.query(SQLUser).all()
       session.close()
       for IDD in ids:
          if IDD.Code == ID:
-            return (IDD.Name, IDD.Per3)
-      return (Settings.Var_KNOW())
+             if PROCESS == Settings.PRO1():
+                return (IDD.Name, IDD.Per1)
+             elif PROCESS == Settings.PRO2():
+                return (IDD.Name, IDD.Per2)
+             elif PROCESS == Settings.PRO3():
+                return (IDD.Name, IDD.Per3)
+             elif PROCESS == Settings.PRO4():
+                 return (IDD.Name, IDD.Per4)
+      return SettingsUs.Var_KNOW(), "0"
 
-   def FindESUser(ID: str):
-         engine = create_engine(Settings.Dir_OP(), echo=True)
+   def FindESUser(TABLA: str, ID: str):
+         engine = create_engine(TABLA, echo=True)
          Session = sessionmaker(engine)
          session = Session()
          Ref = session.query(SQLUser).all()
@@ -82,8 +89,8 @@ class SQLUser(Base):
                    IDD.Municipality, IDD.Socioeconomic, IDD.Mail, IDD.NameSP, IDD.Phone2, IDD.Mobile2, IDD.NameC, IDD.PNAEmergency, IDD.PNAPhone, IDD.Policy, IDD.HomeOwn,
                    IDD.LikeTrain, IDD.Height, IDD.Weight, IDD.Smoke, IDD.Drink, IDD.Sick, IDD.ShirtSize, IDD.PantSize, IDD.ShoeSize, IDD.HeightCourse, IDD.ValidCourse)
 
-   def FindAll():
-         engine = create_engine(Settings.Dir_OP(), echo=True)
+   def FindAll(TABLA: str):
+         engine = create_engine(TABLA, echo=True)
          Session = sessionmaker(engine)
          session = Session()
          Ref = session.query(SQLUser).all()
@@ -190,14 +197,14 @@ class SQLUser(Base):
                    New_Municipality, New_Socioeconomic, New_Mail, New_NameSP, New_Phone2, New_Mobile2, New_NameC, New_PNAEmergency, New_PNAPhone, New_Policy, New_HomeOwn,
                    New_LikeTrain, New_Height, New_Weight, New_Smoke, New_Drink, New_Sick, New_ShirtSize, New_PantSize, New_ShoeSize, NeW_HeightCourse, New_ValidCourse)
 
-   def AddUser(code: str, ID: str, name: str, per1: int, per2: int, per3: int, per4: int, per5: int, per6: int, per7: int,
+   def AddUser(TABLA: str, code: str, ID: str, name: str, per1: int, per2: int, per3: int, per4: int, per5: int, per6: int, per7: int,
                per8: int, per9: int, per10: int, gender: str, areaW: str, position: str, birthday: str, typeB: str,
                grade: str, profession: str, phone: int, mobile: int, eps: str, arl: str, pensions: str, address: str,
                neighborhood: str, municipality: str, socieconomic: str, mail: str, namesp: str, phone2: int, mobile2: int,
                namec: str, pnaemergency: str, pnaphone: int, policy: str, homeown: str, liketrain: str, height: float,
                weight: float, smoke: str, drink: str, sick: str, shirtsize: str, pantsize: str, shoesize: str,
                heightcourse: str, validcourse: str):
-      engine = create_engine(Settings.Dir_OP(), echo=True)
+      engine = create_engine(TABLA, echo=True)
       Base.metadata.create_all(engine)
       Session = sessionmaker(engine)
       session = Session()
@@ -221,7 +228,7 @@ class SQLUser(Base):
       User.Birthday = birthday
       User.TypeB = typeB
       User.Grade = grade
-      User.Profession =profession
+      User.Profession = profession
       User.Phone = phone
       User.Mobile = mobile
       User.EPS = eps
@@ -239,14 +246,14 @@ class SQLUser(Base):
       User.PNAEmergency = pnaemergency
       User.PNAPhone = pnaphone
       User.Policy = policy
-      User.HomeOwn =homeown
+      User.HomeOwn = homeown
       User.LikeTrain = liketrain
       User.Height = height
       User.Weight = weight
       User.Smoke = smoke
       User.Drink = drink
       User.Sick = sick
-      User.ShirtSize =shirtsize
+      User.ShirtSize = shirtsize
       User.PantSize = pantsize
       User.ShoeSize = shoesize
       User.HeightCourse = heightcourse
@@ -255,83 +262,77 @@ class SQLUser(Base):
       session.commit()
       session.close()
 
-   def DeleteUser(ID: str):
-      engine = create_engine(Settings.Dir_OP(), echo=True)
+   def DeleteUser(TABLA: str, ID: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLUser).filter_by(Code=ID).delete()
       session.commit()
       session.close()
 
-   def DeleteALLUser(ID: str):
-      engine = create_engine(Settings.Dir_OP(), echo=True)
+   def DeleteALLUser(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLUser).delete()
       session.commit()
       session.close()
 
-   def UpdateMR(REMISION: str, DATO_MOD, Value):
-      engine = create_engine(Settings.Dir_OP(), echo=True)
+   def UpdateUser(TABLA: str, NAME: str, DATO_MOD: str, Value):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
-      (VID, VName, VPer1, VPer2, VPer3, VPer4, VPer5, VPer6, VPer7, VPer8, VPer9, VPer10, VGender, VAreaW, VPosition, VBirthday,
-       VTypeB, VGrade, VProfession, VPhone, VMobile, VEPS, VARL, VPensions, VAddress, VNeighborhood, VMunicipality, VSocioeconomic,
-       VMail, VNameSP, VPhone2, VMobile2, VNameC, VPNAEmergency, VPNAPhone, VPolicy, VHomeOwn, VLikeTrain, VHeight, VWeight, VSmoke,
-       VDrink, VSick, VShirtSize, VPantSize, VShoeSize, VHeightCourse, VValidCourse) = SQLUser.FindESUser(REMISION)
-      if len(VID) > 1:
-          return
-      if DATO_MOD == SettingsUs.Ref_User1(): session.query(SQLUser).filter_by(Id=VID).update({SQLUser.Id: Value})
-      elif DATO_MOD == SettingsUs.Ref_User2(): session.query(SQLUser).filter_by(Name=VName).update({SQLUser.Name: Value})
-      elif DATO_MOD == SettingsUs.Ref_User3(): session.query(SQLUser).filter_by(Per1=VPer1).update({SQLUser.Per1: Value})
-      elif DATO_MOD == SettingsUs.Ref_User4(): session.query(SQLUser).filter_by(Per2=VPer2).update({SQLUser.Per2: Value})
-      elif DATO_MOD == SettingsUs.Ref_User5(): session.query(SQLUser).filter_by(Per3=VPer3).update({SQLUser.Per3: Value})
-      elif DATO_MOD == SettingsUs.Ref_User6(): session.query(SQLUser).filter_by(Per4=VPer4).update({SQLUser.Per4: Value})
-      elif DATO_MOD == SettingsUs.Ref_User7(): session.query(SQLUser).filter_by(Per5=VPer5).update({SQLUser.Per5: Value})
-      elif DATO_MOD == SettingsUs.Ref_User8(): session.query(SQLUser).filter_by(Per6=VPer6).update({SQLUser.Per6: Value})
-      elif DATO_MOD == SettingsUs.Ref_User9(): session.query(SQLUser).filter_by(Per7=VPer7).update({SQLUser.Per7: Value})
-      elif DATO_MOD == SettingsUs.Ref_User10(): session.query(SQLUser).filter_by(Per8=VPer8).update({SQLUser.Per8: Value})
-      elif DATO_MOD == SettingsUs.Ref_User11(): session.query(SQLUser).filter_by(Per9=VPer9).update({SQLUser.Per9: Value})
-      elif DATO_MOD == SettingsUs.Ref_User12(): session.query(SQLUser).filter_by(Per10=VPer10).update({SQLUser.Per10: Value})
-      elif DATO_MOD == SettingsUs.Ref_User13(): session.query(SQLUser).filter_by(Gender=VGender).update({SQLUser.Gender: Value})
-      elif DATO_MOD == SettingsUs.Ref_User14(): session.query(SQLUser).filter_by(AreW=VAreaW).update({SQLUser.AreaW: Value})
-      elif DATO_MOD == SettingsUs.Ref_User15(): session.query(SQLUser).filter_by(Position=VPosition).update({SQLUser.Position: Value})
-      elif DATO_MOD == SettingsUs.Ref_User16(): session.query(SQLUser).filter_by(Birthday=VBirthday).update({SQLUser.Birthday: Value})
-      elif DATO_MOD == SettingsUs.Ref_User17(): session.query(SQLUser).filter_by(TypeB=VTypeB).update({SQLUser.TypeB: Value})
-      elif DATO_MOD == SettingsUs.Ref_User18(): session.query(SQLUser).filter_by(Grade=VGrade).update({SQLUser.Grade: Value})
-      elif DATO_MOD == SettingsUs.Ref_User19(): session.query(SQLUser).filter_by(Profession=VProfession).update({SQLUser.Profession: Value})
-      elif DATO_MOD == SettingsUs.Ref_User20(): session.query(SQLUser).filter_by(Phone=VPhone).update({SQLUser.Phone: Value})
-      elif DATO_MOD == SettingsUs.Ref_User21(): session.query(SQLUser).filter_by(Mobile=VMobile).update({SQLUser.Mobile: Value})
-      elif DATO_MOD == SettingsUs.Ref_User22(): session.query(SQLUser).filter_by(EPS=VEPS).update({SQLUser.EPS: Value})
-      elif DATO_MOD == SettingsUs.Ref_User23(): session.query(SQLUser).filter_by(ARL=VARL).update({SQLUser.ARL: Value})
-      elif DATO_MOD == SettingsUs.Ref_User24(): session.query(SQLUser).filter_by(Pensions=VPensions).update({SQLUser.Pensions: Value})
-      elif DATO_MOD == SettingsUs.Ref_User25(): session.query(SQLUser).filter_by(Address=VAddress).update({SQLUser.Address: Value})
-      elif DATO_MOD == SettingsUs.Ref_User26(): session.query(SQLUser).filter_by(Neighborhood=VNeighborhood).update({SQLUser.Neighborhood: Value})
-      elif DATO_MOD == SettingsUs.Ref_User27(): session.query(SQLUser).filter_by(Municipality=VMunicipality).update({SQLUser.Municipality: Value})
-      elif DATO_MOD == SettingsUs.Ref_User28(): session.query(SQLUser).filter_by(Socioeconomic=VSocioeconomic).update({SQLUser.Socioeconomic: Value})
-      elif DATO_MOD == SettingsUs.Ref_User29(): session.query(SQLUser).filter_by(Mail=VMail).update({SQLUser.Mail: Value})
-      elif DATO_MOD == SettingsUs.Ref_User30(): session.query(SQLUser).filter_by(NameSP=VNameSP).update({SQLUser.NameSP: Value})
-      elif DATO_MOD == SettingsUs.Ref_User31(): session.query(SQLUser).filter_by(Phone2=VPhone2).update({SQLUser.Phone2: Value})
-      elif DATO_MOD == SettingsUs.Ref_User32(): session.query(SQLUser).filter_by(Mobile2=VMobile2).update({SQLUser.Mobile2: Value})
-      elif DATO_MOD == SettingsUs.Ref_User33(): session.query(SQLUser).filter_by(NameC=VNameC).update({SQLUser.NameC: Value})
-      elif DATO_MOD == SettingsUs.Ref_User34(): session.query(SQLUser).filter_by(PNAEmergency=VPNAEmergency).update({SQLUser.PNAEmergency: Value})
-      elif DATO_MOD == SettingsUs.Ref_User35(): session.query(SQLUser).filter_by(PNAPhone=VPNAPhone).update({SQLUser.PNAPhone: Value})
-      elif DATO_MOD == SettingsUs.Ref_User36(): session.query(SQLUser).filter_by(Policy=VPolicy).update({SQLUser.Policy: Value})
-      elif DATO_MOD == SettingsUs.Ref_User37(): session.query(SQLUser).filter_by(HomeOwn=VHomeOwn).update({SQLUser.HomeOwn: Value})
-      elif DATO_MOD == SettingsUs.Ref_User38(): session.query(SQLUser).filter_by(LikeTrain=VLikeTrain).update({SQLUser.LikeTrain: Value})
-      elif DATO_MOD == SettingsUs.Ref_User39(): session.query(SQLUser).filter_by(Height=VHeight).update({SQLUser.Height: Value})
-      elif DATO_MOD == SettingsUs.Ref_User40(): session.query(SQLUser).filter_by(Weight=VWeight).update({SQLUser.Weight: Value})
-      elif DATO_MOD == SettingsUs.Ref_User41(): session.query(SQLUser).filter_by(Smoke=VSmoke).update({SQLUser.Smoke: Value})
-      elif DATO_MOD == SettingsUs.Ref_User42(): session.query(SQLUser).filter_by(Drink=VDrink).update({SQLUser.Drink: Value})
-      elif DATO_MOD == SettingsUs.Ref_User43(): session.query(SQLUser).filter_by(Sick=VSick).update({SQLUser.Sick: Value})
-      elif DATO_MOD == SettingsUs.Ref_User44(): session.query(SQLUser).filter_by(ShirtSize=VShirtSize).update({SQLUser.ShirtSize: Value})
-      elif DATO_MOD == SettingsUs.Ref_User45(): session.query(SQLUser).filter_by(PantSize=VPantSize).update({SQLUser.PantSize: Value})
-      elif DATO_MOD == SettingsUs.Ref_User46(): session.query(SQLUser).filter_by(ShoeSize=VShoeSize).update({SQLUser.ShoeSize: Value})
-      elif DATO_MOD == SettingsUs.Ref_User47(): session.query(SQLUser).filter_by(HeightCourse=VHeightCourse).update({SQLUser.HeightCourse: Value})
-      elif DATO_MOD == SettingsUs.Ref_User48(): session.query(SQLUser).filter_by(ValidCourse=VValidCourse).update({SQLUser.ValidCourse: Value})
+      if DATO_MOD == SettingsUs.Ref_User1(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Id: Value})
+      elif DATO_MOD == SettingsUs.Ref_User2(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Name: Value})
+      elif DATO_MOD == SettingsUs.Ref_User3(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Per1: Value})
+      elif DATO_MOD == SettingsUs.Ref_User4(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Per2: Value})
+      elif DATO_MOD == SettingsUs.Ref_User5(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Per3: Value})
+      elif DATO_MOD == SettingsUs.Ref_User6(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Per4: Value})
+      elif DATO_MOD == SettingsUs.Ref_User7(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Per5: Value})
+      elif DATO_MOD == SettingsUs.Ref_User8(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Per6: Value})
+      elif DATO_MOD == SettingsUs.Ref_User9(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Per7: Value})
+      elif DATO_MOD == SettingsUs.Ref_User10(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Per8: Value})
+      elif DATO_MOD == SettingsUs.Ref_User11(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Per9: Value})
+      elif DATO_MOD == SettingsUs.Ref_User12(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Per10: Value})
+      elif DATO_MOD == SettingsUs.Ref_User13(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Gender: Value})
+      elif DATO_MOD == SettingsUs.Ref_User14(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.AreaW: Value})
+      elif DATO_MOD == SettingsUs.Ref_User15(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Position: Value})
+      elif DATO_MOD == SettingsUs.Ref_User16(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Birthday: Value})
+      elif DATO_MOD == SettingsUs.Ref_User17(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.TypeB: Value})
+      elif DATO_MOD == SettingsUs.Ref_User18(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Grade: Value})
+      elif DATO_MOD == SettingsUs.Ref_User19(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Profession: Value})
+      elif DATO_MOD == SettingsUs.Ref_User20(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Phone: Value})
+      elif DATO_MOD == SettingsUs.Ref_User21(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Mobile: Value})
+      elif DATO_MOD == SettingsUs.Ref_User22(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.EPS: Value})
+      elif DATO_MOD == SettingsUs.Ref_User23(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.ARL: Value})
+      elif DATO_MOD == SettingsUs.Ref_User24(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Pensions: Value})
+      elif DATO_MOD == SettingsUs.Ref_User25(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Address: Value})
+      elif DATO_MOD == SettingsUs.Ref_User26(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Neighborhood: Value})
+      elif DATO_MOD == SettingsUs.Ref_User27(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Municipality: Value})
+      elif DATO_MOD == SettingsUs.Ref_User28(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Socioeconomic: Value})
+      elif DATO_MOD == SettingsUs.Ref_User29(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Mail: Value})
+      elif DATO_MOD == SettingsUs.Ref_User30(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.NameSP: Value})
+      elif DATO_MOD == SettingsUs.Ref_User31(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Phone2: Value})
+      elif DATO_MOD == SettingsUs.Ref_User32(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Mobile2: Value})
+      elif DATO_MOD == SettingsUs.Ref_User33(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.NameC: Value})
+      elif DATO_MOD == SettingsUs.Ref_User34(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.PNAEmergency: Value})
+      elif DATO_MOD == SettingsUs.Ref_User35(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.PNAPhone: Value})
+      elif DATO_MOD == SettingsUs.Ref_User36(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Policy: Value})
+      elif DATO_MOD == SettingsUs.Ref_User37(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.HomeOwn: Value})
+      elif DATO_MOD == SettingsUs.Ref_User38(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.LikeTrain: Value})
+      elif DATO_MOD == SettingsUs.Ref_User39(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Height: Value})
+      elif DATO_MOD == SettingsUs.Ref_User40(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Weight: Value})
+      elif DATO_MOD == SettingsUs.Ref_User41(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Smoke: Value})
+      elif DATO_MOD == SettingsUs.Ref_User42(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Drink: Value})
+      elif DATO_MOD == SettingsUs.Ref_User43(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.Sick: Value})
+      elif DATO_MOD == SettingsUs.Ref_User44(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.ShirtSize: Value})
+      elif DATO_MOD == SettingsUs.Ref_User45(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.PantSize: Value})
+      elif DATO_MOD == SettingsUs.Ref_User46(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.ShoeSize: Value})
+      elif DATO_MOD == SettingsUs.Ref_User47(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.HeightCourse: Value})
+      elif DATO_MOD == SettingsUs.Ref_User48(): session.query(SQLUser).filter_by(Name=NAME).update({SQLUser.ValidCourse: Value})
       session.commit()
       session.close()
 
-   def CreateUser(ID: str):
-      engine = create_engine(Settings.Dir_OP(), echo=True)
+   def CreateUser(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Base.metadata.create_all(bind=engine)

@@ -11,8 +11,8 @@ class SQLCOM(Base):
    Weighing = Column("BASCULA", String)
    Permition = Column("AUTORIZACION", Integer)
 
-   def AddCom(RFID: str, WEIGHING: str, PERMITION: str):
-      engine = create_engine(Settings.Dir_CN(), echo=True)
+   def AddCom(TABLA: str, RFID: str, WEIGHING: str, PERMITION: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       COM = SQLCOM()
@@ -23,8 +23,8 @@ class SQLCOM(Base):
       session.commit()
       session.close()
 
-   def FindCom(COM: str):
-      engine = create_engine(Settings.Dir_CN(), echo=True)
+   def FindCom(TABLA: str, COM: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session =Session()
       Coms = session.query(SQLCOM).all()
@@ -34,17 +34,17 @@ class SQLCOM(Base):
          elif COM == Settings.Var_Find2(): return com.Weighing
          elif COM == Settings.Var_Find3(): return com.Permition
 
-   def UpdateCom(CONECT: str, COM: str):
-      engine = create_engine(Settings.Dir_CN(), echo=True)
+   def UpdateCom(TABLA: str, CONECT: str, COM: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
-      valueCOM = SQLCOM.FindCom(CONECT)
+      valueCOM = SQLCOM.FindCom(TABLA, CONECT)
       if CONECT == Settings.Var_Find1(): session.query(SQLCOM).filter_by(Rfid=valueCOM).update({SQLCOM.Rfid: COM})
       elif CONECT == Settings.Var_Find2(): session.query(SQLCOM).filter_by(Weighing=valueCOM).update({SQLCOM.Weighing: COM})
       elif CONECT == Settings.Var_Find3(): session.query(SQLCOM).filter_by(Permition=valueCOM).update({SQLCOM.Permition:COM})
       session.commit()
       session.close()
 
-   def CreateCom():
-      engine = create_engine(Settings.Dir_CN(), echo=True)
+   def CreateCom(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Base.metadata.create_all(bind=engine)

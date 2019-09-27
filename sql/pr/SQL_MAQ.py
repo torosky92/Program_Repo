@@ -11,8 +11,8 @@ class SQLMAQ(Base):
    Machine = Column("MAQUINA", String)
    State = Column("ESTADO", String)
 
-   def FindMAQ(MACHINE: str):
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def FindMAQ(TABLA: str, MACHINE: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session =Session()
       id = session.query(SQLMAQ).all()
@@ -20,8 +20,8 @@ class SQLMAQ(Base):
       for ID in id:
          if ID.Machine == MACHINE: return (ID.Machine, ID.State)
 
-   def FindALLMAQ():
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def FindALLMAQ(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session =Session()
       ref = session.query(SQLMAQ).all()
@@ -33,8 +33,8 @@ class SQLMAQ(Base):
          STATE.append(References.State)
       return (MAQ, STATE)
 
-   def AddMAQ(MACHINE: str, STATES: str):
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def AddMAQ(TABLA: str, MACHINE: str, STATES: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session = Session()
       MC = SQLMAQ()
@@ -44,32 +44,32 @@ class SQLMAQ(Base):
       session.commit()
       session.close()
 
-   def DeleteMAQ(MACHINE: str):
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def DeleteMAQ(TABLA: str, MACHINE: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLMAQ).filter_by(Machine=MACHINE).delete()
       session.commit()
       session.close()
 
-   def DeleteALLMAQ():
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def DeleteALLMAQ(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       session.query(SQLMAQ).delete()
       session.commit()
       session.close()
 
-   def UpdateMAQ(REMISION: str, DATO_MOD: str, Value: str):
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def UpdateMAQ(TABLA: str, REMISION: str, DATO_MOD: str, Value: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
-      ValueMachine, ValueState = SQLMAQ.FindMAQ(REMISION)
+      ValueMachine, ValueState = SQLMAQ.FindMAQ(TABLA, REMISION)
       if DATO_MOD == Settings.Var_Comp10(): session.query(SQLMAQ).filter_by(Machine=ValueMachine).update({SQLMAQ.Machine: Value})
       elif DATO_MOD == Settings.Var_Comp11(): session.query(SQLMAQ).filter_by(State=ValueState).update({SQLMAQ.State: Value})
       session.commit()
       session.close()
 
-   def CreateMAQ():
-      engine = create_engine(Settings.Dir_RMAQ(), echo=True)
+   def CreateMAQ(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Base.metadata.create_all(bind=engine)

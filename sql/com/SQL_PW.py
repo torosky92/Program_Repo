@@ -9,8 +9,8 @@ class SQLPW(Base):
    __tablename__ = 'PASSWORD'
    Pass = Column("Contrasena", String, primary_key=True)
 
-   def FindPW():
-      engine = create_engine(Settings.Dir_PW(), echo=True)
+   def FindPW(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(engine)
       session =Session()
       PASS = session.query(SQLPW).all()
@@ -18,8 +18,8 @@ class SQLPW(Base):
       for Pw in PASS:
          return Pw.Pass
 
-   def UpdatePW(PW: str):
-      engine = create_engine(Settings.Dir_PW(), echo=True)
+   def UpdatePW(TABLA: str, PW: str):
+      engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       ValuePW = SQLPW.FindPW()
@@ -27,6 +27,6 @@ class SQLPW(Base):
       session.commit()
       session.close()
 
-   def CreatePW():
-      engine = create_engine(Settings.Dir_PW(), echo=True)
+   def CreatePW(TABLA: str):
+      engine = create_engine(TABLA, echo=True)
       Base.metadata.create_all(bind=engine)

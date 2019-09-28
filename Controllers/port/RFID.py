@@ -12,10 +12,10 @@ class Rfid:
 
     def Rfid_Read(self, PROCESS: str, TYPEACCESS: str):
         if TYPEACCESS == Settings.ACC2():
-            Accept = QMessageBox.question(self, "Redepesca", "Favor de Ingresar la tarjeta luego de Aceptar",
+            Accept = QMessageBox.question(self, Settings.Company(), "Favor de Ingresar la tarjeta luego de Aceptar",
                                           QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         else:
-            Accept = QMessageBox.question(self, 'Redepesca', "¿Seguro quieres Cancelar TODO LO INGRESADO? (Si se acepta favor de ingresar la tarjeta)",
+            Accept = QMessageBox.question(self, Settings.Company(), "¿Seguro quieres Cancelar TODO LO INGRESADO? (Si se acepta favor de ingresar la tarjeta)",
                                                QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         COM = SQLCOM.FindCom(Settings.Dir_CN(), Settings.Var_Find1())
         if Accept == QMessageBox.Yes:

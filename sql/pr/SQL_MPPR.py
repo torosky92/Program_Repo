@@ -37,6 +37,7 @@ class SQLFunction:
       for References in ref:
          if References.Num_Rem == REFERENCE:
             return (References.CodeB, References.Num_Pre, References.Num_Rem, References.Num_Coils, References.Num_CoilsR, References.Total_Weight, References.Total_WeightR, References.Measurement)
+      return (" ", " ", " ", 0, 0, 0, 0, " ")
 
    def FindCodeBMPPR(NameTable: str, TABLA: str, REFERENCE: str):
       engine = create_engine(TABLA, echo=True)
@@ -141,20 +142,19 @@ class SQLFunction:
       session.commit()
       session.close()
 
-   def UpdateMPPR(NameTable: str, TABLA: str, REMISION: str, DATO_MOD, Value):
+   def UpdateMPPR(NameTable: str, TABLA: str, REMISION: str, CODE: str, DATO_MOD, Value):
       engine = create_engine(TABLA, echo=True)
       Session = sessionmaker(bind=engine)
       session = Session()
       N_Table = SQLFunction.WhichTable(NameTable)
-      valueCodeB, ValueNumPre, ValueNumRem, ValueCoils, ValuerCoilsR, ValueTotalW, ValueTotalWR, ValueMe = SQLFunction.FindMPPR(NameTable, TABLA, REMISION)
-      if DATO_MOD == Settings.Var_Comp1(): session.query(N_Table).filter_by(CodeB=valueCodeB).update({N_Table.CodeB: Value})
-      elif DATO_MOD == Settings.Var_Comp2(): session.query(N_Table).filter_by(Num_Rem=ValueNumRem).update({N_Table.Num_Rem: Value})
-      elif DATO_MOD == Settings.Var_Comp3(): session.query(N_Table).filter_by(Num_Pre=ValueNumPre).update({N_Table.Num_Pre: Value})
-      elif DATO_MOD == Settings.Var_Comp4(): session.query(N_Table).filter_by(Total_Weight=ValueTotalW).update({N_Table.Total_Weight: Value})
-      elif DATO_MOD == Settings.Var_Comp5(): session.query(N_Table).filter_by(Total_WeightR=ValueTotalWR).update({N_Table.Total_WeightR: Value})
-      elif DATO_MOD == Settings.Var_Comp6(): session.query(N_Table).filter_by(Num_Coils=ValueCoils).update({N_Table.Num_Coils: Value})
-      elif DATO_MOD == Settings.Var_Comp7(): session.query(N_Table).filter_by(Num_CoilsR=ValuerCoilsR).update({N_Table.Num_CoilsR: Value})
-      else: session.query(N_Table).filter_by(Measurement=ValueMe).update({N_Table.Measurement: Value})
+      if DATO_MOD == Settings.Var_Comp1(): session.query(N_Table).filter_by(Num_Rem=REMISION).filter_by(CodeB=CODE).update({N_Table.CodeB: Value})
+      elif DATO_MOD == Settings.Var_Comp2(): session.query(N_Table).filter_by(Num_Rem=REMISION).filter_by(CodeB=CODE).update({N_Table.Num_Rem: Value})
+      elif DATO_MOD == Settings.Var_Comp3(): session.query(N_Table).filter_by(Num_Rem=REMISION).filter_by(CodeB=CODE).update({N_Table.Num_Pre: Value})
+      elif DATO_MOD == Settings.Var_Comp4(): session.query(N_Table).filter_by(Num_Rem=REMISION).filter_by(CodeB=CODE).update({N_Table.Total_Weight: Value})
+      elif DATO_MOD == Settings.Var_Comp5(): session.query(N_Table).filter_by(Num_Rem=REMISION).filter_by(CodeB=CODE).update({N_Table.Total_WeightR: Value})
+      elif DATO_MOD == Settings.Var_Comp6(): session.query(N_Table).filter_by(Num_Rem=REMISION).filter_by(CodeB=CODE).update({N_Table.Num_Coils: Value})
+      elif DATO_MOD == Settings.Var_Comp7(): session.query(N_Table).filter_by(Num_Rem=REMISION).filter_by(CodeB=CODE).update({N_Table.Num_CoilsR: Value})
+      else: session.query(N_Table).filter_by(Num_Rem=REMISION).filter_by(CodeB=CODE).update({N_Table.Measurement: Value})
       session.commit()
       session.close()
 

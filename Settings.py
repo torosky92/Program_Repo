@@ -130,3 +130,9 @@ class Settings:
 
     def PR(): return 'NUEVO PROCESO'
     def PR2(): return 'PROCESO'
+
+    def HELP(): return 'Se Retira quiere decir que es lo que se va retirar si va hacer bobinas o la presentacion que viene (Estiba o caja)'
+    def HELP2(): return 'Precionar tara cuando este el carrito en la bascula con las bobinas vacias'
+
+    def Disavalible(): return  '¡REFERENCIA NO DISPONIBLE!! Favor de ingresar Referencias'
+    def Company(): return 'Rede Pesca'

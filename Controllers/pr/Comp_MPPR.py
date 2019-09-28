@@ -74,3 +74,20 @@ class findMPPR:
             Type = Settings.Dir_PBDR()
         CodeBr, NumPre, NumRem, NumCoils, NumCoilsR, TotalW, TotalWR, Measure = SQLFunction.FindsMPPR(NameTable, Type, REF)
         return (NumCoils, NumCoilsR, TotalW, TotalWR)
+
+    def UpgradeMPPR(Provider: str, Presentation: str, Table: str, REMISION: str, CODE: str, DATO_MOD, Value):
+        if Provider == Settings.Var_Provider1():
+            if Presentation == Settings.Var_P1():
+                NameTable = Settings.Var_EC()
+            else:
+                NameTable = Settings.Var_EE()
+        else:
+            if Presentation == Settings.Var_P1():
+                NameTable = Settings.Var_IC()
+            else:
+                NameTable = Settings.Var_IE()
+        if Table == Settings.Var_Process1():
+            Type = Settings.Dir_BDR()
+        else:
+            Type = Settings.Dir_PBDR()
+        SQLFunction.UpdateMPPR(NameTable, Type, REMISION, CODE, DATO_MOD, Value)

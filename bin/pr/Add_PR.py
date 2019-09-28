@@ -2,8 +2,10 @@ import datetime, time
 
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMessageBox
+
 from bin.Main import Ui_MainWindow
 from SettingsUser import SettingsUs
+from bin.pr.More_Order import MoreOrderPR
 
 class AddDataPR(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -24,3 +26,7 @@ class AddDataPR(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.NPRO.setEnabled(True)
             else:
                 QMessageBox.about(self, "Redepesca", "!NO TIENES PERMISO PARA TRABAJAR¡")
+
+    def AddOrder(self):
+        MoreOrderPR.Add_More(self, "¿Seguro quieres adicionar este lote y Adicionar mas?")
+        REFERENCE = str(self.REF1.toPlainText())

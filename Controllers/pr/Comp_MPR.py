@@ -89,3 +89,18 @@ class findMPR:
             Type = Settings.Dir_PBDR()
         Refs, Workers, Providers, References2, Presentations, NumRems, NumPres, NumCoils, NumCoilsR, TotalWeight, TotalWeightR, InitialDate, FinalDate, CodeBr = SQLMPR.FindMPR(Type, REF)
         return (Providers, References2, Presentations)
+
+    def Find_MPR(Table:str, REF: str):
+        if Table == Settings.Var_Process1():
+            Type = Settings.Dir_BDR()
+        else:
+            Type = Settings.Dir_PBDR()
+        Refs, Workers, Providers, References2, Presentations, NumRems, NumPres, NumCoils, NumCoilsR, TotalWeight, TotalWeightR, InitialDate, FinalDate, CodeBr = SQLMPR.FindMPR(Type, REF)
+        return (NumCoilsR, TotalWeightR)
+
+    def UpgradeMPR(Table:str, REMISION: str, DATO_MOD, Value):
+        if Table == Settings.Var_Process1():
+            Type = Settings.Dir_BDR()
+        else:
+            Type = Settings.Dir_PBDR()
+        SQLMPR.UpdateMPR(Type, REMISION, DATO_MOD, Value)
